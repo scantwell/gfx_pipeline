@@ -1,26 +1,52 @@
 import re
-from old.line import Line
-from old.point2d import Point2D
+
+from d2.objects.line import Line
+from d2.objects.polygon import Polygon
+from d2.point2d import Point2D
 
 
 class PostscriptParser(object):
 
-    @staticmethod
-    def parse(fname):
-        retval = []
+    def __init__(self, fname):
         with open(fname, 'r', 0) as file:
-            content = PostscriptParser._strip(file)
-            for line in content:
+            self._content = PostscriptParser._strip(file)
+        self._index = 0
+
+    def next_token(self):
+        if self._index < len(self._content):
+            line = self._content[self._index]
+            self._index += 1
+            return line.strip()
+        else:
+            raise StopIteration()
+
+    def parse_objects(self):
+        retval = []
+        try:
+            while True:
+                line = self.next_token()
                 tokens = line.split()
                 name = tokens[-1:][0]
-                if name.lower() == 'line':
-                    tokens = map(float, tokens[:-1])
-                    pt0 = Point2D(tokens[0], tokens[1])
-                    pt1 = Point2D(tokens[2], tokens[3])
+                pts = map(float, tokens[:-1])
+                if name.lower() == 'moveto':
+                    pt = Point2D(pts[0], pts[1])
+                    retval.append(self._create_polygon(pt))
+                elif name.lower() == 'line':
+                    pt0, pt1 = Point2D(pts[0], pts[1]), Point2D(pts[2], pts[3])
                     retval.append(Line(pt0, pt1))
-                else:
-                    raise RuntimeError('Failed to parse line. Got {} instead.'.format(name))
-        return retval
+        except StopIteration:
+            pass
+        finally:
+            return retval
+
+    def _create_polygon(self, start):
+        points = [start]
+        line = self.next_token()
+        while line != 'stroke':
+            line = line.split()
+            points.append(Point2D(float(line[0]), float(line[1])))
+            line = self.next_token()
+        return Polygon(points)
 
     @staticmethod
     def _strip(file):

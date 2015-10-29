@@ -1,4 +1,4 @@
-from 2d.point2d import Point2D
+from d2.point2d import Point2D
 from algorithms import cohen_sutherland, dda
 
 class Line(object):
