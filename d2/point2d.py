@@ -1,4 +1,4 @@
-from numpy import matrix, cos, sin, radians
+from numpy import matrix, cos, sin, radians, rint
 
 
 class Point2D(object):
@@ -10,6 +10,9 @@ class Point2D(object):
 
     def __str__(self):
         return '({}, {})'.format(self._matrix.item(0), self._matrix.item(1))
+
+    def round(self):
+        self._matrix = self._matrix.round().astype(int)
 
     def rotate(self, x, y, degrees):
         rads = radians(degrees)
@@ -35,6 +38,9 @@ class Point2D(object):
                                      [0, 1, dy],
                                      [0, 0, 1]])
         self._matrix = translation_matrix.dot(self._matrix)
+
+    def dot(self, mul):
+        self._matrix = mul.dot(self._matrix)
 
     def x(self):
         return self._matrix.item(0)

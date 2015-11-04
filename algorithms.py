@@ -109,6 +109,10 @@ def find_intersection(vx0, vy0, vx1, vy1, rx0, ry0, rx1, ry1):
     dr = rx1 - rx0, ry1 - ry0
     try:
         t0 = float(((vx0 - rx0)*dr[1] + (ry0 - vy0)*dr[0]))/(dv[1] * dr[0] - dv[0] * dr[1])
+        if t0 < 0:
+            raise ArithmeticError('Line intersects before segment.')
+        if t0 > 1:
+            raise ArithmeticError('Line intersects after segment.')
         t0_x = vx0 + t0 * dv[0]
         t0_y = vy0 + t0 * dv[1]
         return t0_x, t0_y

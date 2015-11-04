@@ -52,7 +52,7 @@ class PostscriptParser(object):
     def _strip(file):
         start_idx = 0
         end_idx = 0
-        contents = file.readlines()
+        contents = filter(None, (line.rstrip() for line in file))
         for line in contents:
             if re.match(r'^\s*%\s*%\s*%\s*BEGIN\s*$', line):
                 start_idx = contents.index(line) + 1

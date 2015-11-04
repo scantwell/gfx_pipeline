@@ -1,6 +1,7 @@
 from d2.point2d import Point2D
 from algorithms import cohen_sutherland, dda
 
+
 class Line(object):
 
     def __init__(self, start, end):
@@ -28,7 +29,6 @@ class Line(object):
         else:
             self._start = Point2D(x0, y0)
             self._end = Point2D(x1, y1)
-
 
     def end(self):
         return self._end.x(), self._end.y()
